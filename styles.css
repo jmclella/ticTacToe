@@ -10,7 +10,8 @@
     --header-color: #8d9db6;
     --body-color: #bccad6;
     --grid-border: #f1e3dd;
-    --selections: #667292;
+    --selections: #c2c2c2;
+    --selections-hover: #b0afaf;
     --text-color: #484f4f;
     font-size: 24px;
     font-family: sans-serif;
@@ -35,6 +36,7 @@
     justify-content: center;
     align-items: center;
     background-color: var(--header-color);
+    font-weight: normal;
 }
 
 .playerSelection {
@@ -57,11 +59,12 @@
     background-color: var(--selections);
     border: 4px solid var(--text-color);
     border-radius: 8px;
+    font-size: 32px;
 }
 
 .playerX:hover,
 .playerO:hover {
-    opacity: .7;
+    background-color: var(--selections-hover);
     cursor: pointer;
 }
 
@@ -75,6 +78,17 @@
     padding: 25px;
 }
 
-.gameboard-container > div {
-    border: 4px solid var(--selections);
+.gameboard-container > button {
+    border: 4px solid var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 32px;
+    background-color: var(--selections);
 }
+
+.gameboard-container > button:hover {
+    background-color: var(--selections-hover);
+    cursor: pointer;
+}
+
