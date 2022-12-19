@@ -1,5 +1,6 @@
 // Create gameBoard array
-let gameBoard = ['X', 'X', 'O', 'X', 'X', 'X','X', 'X', 'X'];
+let gameBoard = ['', '', '', '', '', '', '', '', ''];
+const allCells = document.querySelectorAll('.gameboard-container > button');
 
 // Declare grid cell variables
 const cell0 = document.getElementById('cell0');
@@ -12,7 +13,7 @@ const cell6 = document.getElementById('cell6');
 const cell7 = document.getElementById('cell7');
 const cell8 = document.getElementById('cell8');
 
-
+// Display Board Module
 const displayController = (function () {
     const genBoard = () => {
         cell0.textContent = gameBoard[0];
@@ -26,19 +27,96 @@ const displayController = (function () {
         cell8.textContent = gameBoard[8];
     }
 
-    const choiceX = () => {
+    const resetBoard = () => {
         gameBoard = ['', '', '', '', '', '', '', '', ''];
         genBoard();
+    }
+
+    const choiceX = () => {
+        let playerOne = Player('X');
+        let playerTwo = Player('O');
+        
+        // Create Board
+        genBoard();
+        playerOne.makePlayerMove();
     }
 
     const choiceO = () => {
-        let randomChoice = Math.floor(Math.random() * 9);
-        gameBoard = ['', '', '', '', '', '', '', '', ''];
-        gameBoard[randomChoice] = 'O';
+        let playerOne = Player('O');
+        let playerTwo = Player('X');
+
+        // Create Board
         genBoard();
+        playerTwo.makeComputerMove();
     }
 
-    return {genBoard, choiceX, choiceO};
+    return {genBoard, resetBoard, choiceX, choiceO};
 }) ();
 
-displayController.genBoard();
+
+const Player = (choice) => {
+    const playerChoice = choice;
+
+    const checkWin = () => {
+        if ((gameBoard[0] == choice && gameBoard[1] == choice && gameBoard[2] == choice) ||
+            (gameBoard[3] == choice && gameBoard[4] == choice && gameBoard[5] == choice) ||
+            (gameBoard[6] == choice && gameBoard[7] == choice && gameBoard[8] == choice) ||
+            (gameBoard[0] == choice && gameBoard[3] == choice && gameBoard[6] == choice) ||
+            (gameBoard[1] == choice && gameBoard[4] == choice && gameBoard[7] == choice) ||
+            (gameBoard[2] == choice && gameBoard[5] == choice && gameBoard[8] == choice) ||
+            (gameBoard[1] == choice && gameBoard[4] == choice && gameBoard[8] == choice) ||
+            (gameBoard[2] == choice && gameBoard[4] == choice && gameBoard[6] == choice)) {
+                displayController.resetBoard();
+                return true;
+            } else {
+                return false;
+            }
+    }
+
+    const checkEndGame = (arr) => {
+        for (var i=0; i<arr.length; i++) {
+            if (arr[i] === '') {
+                return false;
+            }
+            displayController.resetBoard();
+            return true;
+        }
+    }
+
+    const makePlayerMove = () => {
+        allCells.forEach(button => {
+            button.addEventListener('click', () => {
+                let buttonID = button.id;
+                let buttonIndex = parseInt(buttonID.slice(-1));
+                if (gameBoard[buttonIndex] === '') {
+                    gameBoard[buttonIndex] = choice;
+                    displayController.genBoard();
+                    checkWin();
+                    checkEndGame(gameBoard);
+                    makeComputerMove();
+                } else {
+                    makePlayerMove();
+                }
+            })
+        })
+    }
+
+    const makeComputerMove = () => {
+        let randomChoice = Math.floor(Math.random() * 9);
+        while (gameBoard[randomChoice] != '') {
+            randomChoice = Math.floor(Math.random() * 9);
+        }
+
+        let computerChoice = choice;
+        
+        gameBoard[randomChoice] = computerChoice;
+        displayController.genBoard();
+        checkWin();
+        checkEndGame(gameBoard);
+        makePlayerMove();
+    }
+    
+
+    return {playerChoice, checkWin, checkEndGame, makePlayerMove, makeComputerMove};
+}
+
